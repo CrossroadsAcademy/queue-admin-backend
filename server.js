@@ -1,8 +1,9 @@
 const express = require('express'),
     app = express(),
     cors = require('cors'),
-    routes = require('./routes'),
-    port = 3000;
+    routes = require('./routes');
+
+require('dotenv').config();
 
 
 
@@ -35,8 +36,8 @@ app.use(function (err, req, res, next) {
 
 
 try {
-    app.listen(port, function () {
-        console.log(`Http Service is running on port ${port}`);
+    app.listen(process.env.PORT, function () {
+        console.log(`Http Service is running on port ${process.env.PORT}`);
     });
 } catch (err) {
     // Error Handler function goes here
