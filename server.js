@@ -1,7 +1,8 @@
 const express = require('express'),
     app = express(),
     cors = require('cors'),
-    routes = require('./routes');
+    routes = require('./routes'),
+    { createMongoDbConnection } = require('./configuration/connection');
 
 require('dotenv').config();
 
