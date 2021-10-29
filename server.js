@@ -37,6 +37,7 @@ app.use(function (err, req, res, next) {
 
 
 try {
+    createMongoDbConnection();
     app.listen(process.env.PORT, function () {
         console.log(`Http Service is running on port ${process.env.PORT}`);
     });
