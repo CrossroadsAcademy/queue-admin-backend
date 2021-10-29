@@ -1,8 +1,9 @@
 const express = require('express'),
     app = express(),
     cors = require('cors'),
+    expressFileUpload = require('express-fileupload'),
     routes = require('./routes'),
-    { createMongoDbConnection } = require('./configuration/connection');
+    { createMongoDbConnection } = require('./config/connection');
 
 require('dotenv').config();
 
@@ -11,12 +12,13 @@ require('dotenv').config();
 app.use(cors())// Cross Origin Resource Sharing 
     .use(express.json()) // Parse JSON 
     .use(express.urlencoded({ extended: true }))  //Parse urlencoded payloads
+    .use(expressFileUpload()) //express-fileupload module
     .use(express.static(__dirname + '/public'));  //setting public folder as static
 
 
 //Router
 
-app.use('/api/v1/admin/',routes)
+app.use('/api/v1/admin/',routes);
 
 
 app.use(function (req, res, next) {

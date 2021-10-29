@@ -11,10 +11,12 @@ module.exports.createMongoDbConnection = async function createMongoDbConnection(
       }
     );
     console.log('Connected to database');
-  } catch (error) {}
+  } catch (error) {
+      console.log("Database Connection Failed Error:",error);
+  }
 };
 module.exports.getMongoDbConnection = async function getMongoDbConnection() {
   try {
-    return await objMongoConnection.db('MSG');
+    return await objMongoConnection.db(process.env.DB_NAME);
   } catch (error) {}
 };
