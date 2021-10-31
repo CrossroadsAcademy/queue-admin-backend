@@ -14,12 +14,10 @@ const db =require('../db/index');
 
 module.exports.registerAdmin = function (req,res){
     try {
+        db.checkAdmin();
+        // db.registerAdmin(req.body);
+        res.json("success");    
 
-    db.registerAdmin(req.body);
-
-
-    res.json("success");
-        
     } catch (error) {
         console.log(error);
         res.json({ status: 501, msg: 'Something Went Wrong in registerAdmin Controller'});
