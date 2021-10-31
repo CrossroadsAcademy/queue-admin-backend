@@ -18,3 +18,21 @@ module.exports.registerAdmin = (data)=>{
         }
     })
 }
+
+module.exports.checkAdmin=()=>{
+    return new Promise(async (resolve,reject)=>{
+        try {
+            const db = await getMongoDbConnection();
+            const collection = db.collection(COLLECTION.admin);
+            const response = await collection.find();
+
+            console.log("AdminCheck:",response);
+
+
+
+            
+        } catch (error) {
+            
+        }
+    })
+}
