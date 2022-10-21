@@ -2,7 +2,7 @@ const express = require('express'),
     app = express(),
     cors = require('cors'),
     expressFileUpload = require('express-fileupload'),
-    routes = require('./routes'),
+    authRouter = require('./routes/auth'),
     { createMongoDbConnection } = require('./config/connection');
 
 require('dotenv').config();
@@ -18,7 +18,7 @@ app.use(cors())// Cross Origin Resource Sharing
 
 //Router
 
-app.use('/api/v1/admin/',routes);
+app.use('/api/admin/auth',authRouter);
 
 
 app.use(function (req, res, next) {
