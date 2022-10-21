@@ -1,8 +1,8 @@
 const router = require('express').Router();
-const {registerAdmin}=require('../controllers/authControllers')
+const { registerAdmin } = require('../controllers/authControllers')
 
 
-router.get('/',(req,res)=>{
+router.get('/', (req, res) => {
     res.json("Admin Server is Alive");
 });
 

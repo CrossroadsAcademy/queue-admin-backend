@@ -1,16 +1,15 @@
-const db =require('../db/authHelpers');
+const db = require('../db/authHelpers');
 
-module.exports.registerAdmin = function (req,res){
+module.exports.registerAdmin = function (req, res) {
     try {
-        const {username, password}=req.body
-        db.registerAdmin(req.body).then((response)=>{
-            res.json("success");    
-        }).catch((error)=>{
-            res.json(error.msg)
+        db.registerAdmin(req.body).then((response) => {
+            res.json({ status: 200, msg: "Registration success" });
+        }).catch((error) => {
+            res.json({ status: 500, msg: error.msg })
         })
 
     } catch (error) {
         console.log(error);
-        res.json({ status: 501, msg: 'Something Went Wrong in registerAdmin Controller'});
+        res.json({ status: 501, msg: 'Something Went Wrong in registerAdmin Controller' });
     }
 }
