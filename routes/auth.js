@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { registerAdmin } = require('../controllers/authControllers')
+const { registerAdmin, adminLogin } = require('../controllers/authControllers')
 
 
 router.get('/', (req, res) => {
@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
 });
 
 router.post("/register", registerAdmin);
-// router.use("/login",require('./login'));
+router.post("/login", adminLogin);
 
 
 
