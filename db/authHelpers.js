@@ -24,23 +24,23 @@ module.exports.registerAdmin = (data) => {
     })
 }
 
-// module.exports.Login = ({username, password}) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             const db = await getMongoDbConnection();
-//             const collection = db.collection(COLLECTION.admin);
-//             const checkAdmin = await collection.findOne();
-//             if(checkAdmin){
-//                 if(checkAdmin.username==username){
-//                     bcrypt.compare(password, checkAdmin.password).then((status)=>{
-//                         status? resolve({ message: "Login Successfull" }): reject({ message: "Incorrect password" })
-//                     }).catch(error => reject({ message: error.message }))
-//                 }
-//                 else   return reject({ message: "Incorrect username" });          
-//             }
-//            else return reject({ message: "Admin does not exist" });
-//         } catch (error) {
-//             reject(error);
-//         }
-//     })
-// }
+module.exports.Login = ({ username, password }) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const db = await getMongoDbConnection();
+            const collection = db.collection(COLLECTION.admin);
+            const admin = await collection.findOne();
+            if (admin) {
+                if (admin.username == username) {
+                    bcrypt.compare(password, admin.password)
+                        .then(status => status ? resolve({ id: admin._id }) : reject({ message: "Incorrect password" }))
+                        .catch(error => reject({ message: error.message }))
+                }
+                else return reject({ message: "Incorrect username" });
+            }
+            else return reject({ message: "Admin does not exist" });
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
