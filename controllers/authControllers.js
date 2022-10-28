@@ -1,17 +1,17 @@
 const db = require('../db/authHelpers');
+const { validateRegister, validateLogin } = require('../validations/authValidators');
 
 module.exports.registerAdmin = function (req, res) {
     try {
-        const data = req.body
-        const { username, password, email, organisation } = data
-        if (username && password && email && organisation) {
-            db.registerAdmin(data).then((response) => {
-                res.json({ status: 200, message: "Registration success" });
-            }).catch((error) => {
-                res.json({ status: 500, message: error.message })
-            })
+        const { error, value } = validateRegister(req.body)
+        if (error) {
+            return res.json({ status: 422, errors: error.details })
         }
-        else res.json({ status: 500, message: "Insufficient data" })
+        db.registerAdmin(value).then((response) => {
+            res.json({ status: 200, message: "Registration success" });
+        }).catch((error) => {
+            res.json({ status: 500, message: error.message })
+        })
     } catch (error) {
         res.json({ status: 501, message: error.message });
     }
@@ -19,16 +19,15 @@ module.exports.registerAdmin = function (req, res) {
 
 module.exports.adminLogin = function (req, res) {
     try {
-        const data = req.body
-        const { username, password } = data
-        if (username && password) {
-            db.Login(data).then((response) => {
-                res.json({ status: 200, message: "Login success" });
-            }).catch((error) => {
-                res.json({ status: 500, message: error.message })
-            })
+        const { error, value } = validateLogin(req.body)
+        if (error) {
+            return res.json({ status: 422, errors: error.details })
         }
-        else res.json({ status: 500, message: "Insufficient data" })
+        db.Login(value).then((response) => {
+            res.json({ status: 200, message: "Login success" });
+        }).catch((error) => {
+            res.json({ status: 500, message: error.message })
+        })
     } catch (error) {
         res.json({ status: 501, message: error.message });
     }
