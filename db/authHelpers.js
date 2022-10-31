@@ -3,7 +3,6 @@ const COLLECTION = require('../config/collections');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer')
 
-
 module.exports.registerAdmin = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -57,8 +56,11 @@ module.exports.ForgotPassword = ({ email, password }) => {
                 if (admin.email == email) {
                     bcrypt.compare(password, admin.password)
                         .then((status) => {
-                            if (status){
+                            if (status) {
                                 async function main() {
+                                    otp = Math.random();
+                                    otp = otp * 1000000;
+                                    otp = parseInt(otp)
 
                                     let transporter = nodemailer.createTransport({
                                         service: "gmail",
@@ -68,13 +70,12 @@ module.exports.ForgotPassword = ({ email, password }) => {
                                         },
                                     });
 
-                                    // send mail with defined transport object
                                     let info = await transporter.sendMail({
                                         from: process.env.ADMIN_MAIL_ID, // sender address
                                         to: email, // list of receivers
-                                        subject: "sdfs ✔", // Subject line
-                                        text: "Hello sdffsd?", // plain text body
-                                        html: "<b>Hello world?</b>", // html body
+                                        subject: "OTP Varification", // Subject line
+                                        text: "OTP", // plain text body
+                                        html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + otp + "</h1>" // html body
                                     });
 
                                     console.log("Message sent: %s", info.messageId);
@@ -83,18 +84,57 @@ module.exports.ForgotPassword = ({ email, password }) => {
                                 }
 
                                 main()
-                                .then(status =>  resolve({ mailStatus: true }))
-                                .catch(console.error);
-                            }else{
+                                    .then(async (status) => {
+                                        otp = otp.toString()
+                                        otp = await bcrypt.hash(otp, 10)
+                                        collection.findOneAndUpdate({ email: admin.email }, {
+                                            $set: {
+                                                "otp": otp
+                                            }
+                                        }).then(status => resolve({ mailStatus: true })).catch(console.error);
+                                    })
+                                    .catch(console.error);
+                            } else {
                                 reject({ message: "Incorrect password" })
                             }
-                            
-                        } )
+
+                        })
                         .catch(error => reject({ message: error.message }))
                 }
                 else return reject({ message: "Incorrect username" });
             }
             else return reject({ message: "Admin does not exist" });
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+
+module.exports.Otp = ({ userOtp, password }) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const db = await getMongoDbConnection();
+            const collection = db.collection(COLLECTION.admin);
+            const admin = await collection.findOne();
+
+            if (admin) {
+                userOtp = userOtp.toString()
+                const otpCheck = await bcrypt.compare(userOtp, admin.otp)
+                console.log(otpCheck);
+
+                if (otpCheck) {
+                    // $2b$10$Y5SVk15WvBSB1o / z0mfSiOedC7IC.dgS225D0l / nXzYZ5KVjthm / i
+                    password = await bcrypt.hash(password, 10)
+                    collection.findOneAndUpdate({ email: admin.email }, {
+                        $set: {
+                            "password": password
+                        }
+                    }).then(status => resolve({ mailStatus: true })).catch(console.error)
+                } else {
+                    reject({ otpVerify: false, message: "otp is incorrect" })
+                }
+            }
         } catch (error) {
             reject(error);
         }
