@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { registerAdmin, adminLogin } = require('../controllers/authControllers')
+const { registerAdmin, adminLogin, forgotPassword } = require('../controllers/authControllers')
 
 
 router.get('/', (req, res) => {
@@ -8,6 +8,7 @@ router.get('/', (req, res) => {
 
 router.post("/register", registerAdmin);
 router.post("/login", adminLogin);
+router.post("/forgot-password", forgotPassword);
 
 
 

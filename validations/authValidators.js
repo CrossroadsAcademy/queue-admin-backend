@@ -15,5 +15,11 @@ const loginSchema = joi.object({
     password: joi.string().min(3).max(10).required()
 });
 
+const forgotPassword = joi.object({
+    email: joi.string().required(),
+    password: joi.string().required()
+});
+
 exports.validateRegister = validator(registerSchema)
 exports.validateLogin = validator(loginSchema)
+exports.forgotPassword = validator(forgotPassword)
