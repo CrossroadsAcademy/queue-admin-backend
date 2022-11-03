@@ -1,19 +1,19 @@
 const db = require('../db/authHelpers');
-const { validateRegister, validateLogin, forgotPassword } = require('../validations/authValidators');
+const { validateRegister, validateLogin, validateForgot, validateOtp } = require('../validations/authValidators');
 
 module.exports.registerAdmin = function (req, res) {
     try {
         const { error, value } = validateRegister(req.body)
         if (error) {
-            return res.json({ status: 422, errors: error.details })
+            return res.status(422).json({ errors: error.details })
         }
         db.registerAdmin(value).then((response) => {
-            res.json({ status: 200, message: "Registration success" });
+            res.status(200).json({ message: "Registration success" });
         }).catch((error) => {
-            res.json({ status: 500, message: error.message })
+            res.status(500).json({ message: error.message })
         })
     } catch (error) {
-        res.json({ status: 501, message: error.message });
+        res.status(501).json({ message: error.message });
     }
 }
 
@@ -21,32 +21,50 @@ module.exports.adminLogin = function (req, res) {
     try {
         const { error, value } = validateLogin(req.body)
         if (error) {
-            return res.json({ status: 422, errors: error.details })
+            return res.status(422).json({ errors: error.details })
         }
         db.Login(value).then((response) => {
-            res.json({ status: 200, message: "Login success" });
+            res.status(200).json({ message: "Login success" });
         }).catch((error) => {
-            res.json({ status: 500, message: error.message })
+            res.status(500).json({ message: error.message })
         })
     } catch (error) {
-        res.json({ status: 501, message: error.message });
+        res.status(501).json({ message: error.message });
     }
 }
 
 
-module.exports.forgotPassword = function (req, res) {
+module.exports.AdminForgot = function (req, res) {
     try {
-        const { error, value } = forgotPassword(req.body)
+        const { error, value } = validateForgot(req.body)
         if (error) {
-            return res.json({ status: 422, errors: error.details })
+            return res.status(422).json({ errors: error.details })
         }
         db.ForgotPassword(value).then((response) => {
-            res.json({ status: 200, message: "mail sended" });
+            res.status(200).json({ message: "mail sended" });
         }).catch((error) => {
-            res.json({ status: 500, message: error.message })
+            res.status(500).json({ message: error.message })
         })
 
     } catch (error) {
-        res.json({ status: 501, message: error.message });
+        res.status(501).json({ message: error.message });
+    }
+}
+
+module.exports.AdminOtp = function (req, res) {
+    try {
+        const { error, value } = validateOtp(req.body)
+        if (error) {
+            return res.status(422).json({ errors: error.details })
+        }
+        db.Otp(value).then((response) => {
+            res.status(200).json({ message: "otp verified and password is changed" });
+        }).catch((error) => {
+            console.log(error.message);
+            res.status(500).json({ message: error.message })
+        })
+
+    } catch (error) {
+        res.status(501).json({ message: error.message });
     }
 }
